@@ -12,5 +12,7 @@ RUN pnpm run build
 
 EXPOSE 80
 ENV HOSTNAME "0.0.0.0"
+ENV NUXT_HOST=0.0.0.0
+ENV NUXT_PORT=3000
 
 CMD [ "pnpm", "start" ]
