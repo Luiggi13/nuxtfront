@@ -1,0 +1,9 @@
+version: '3.9'
+
+services:
+  nextapp:
+    container_name: front
+    image: nuxt-front
+    build: .
+    ports:
+      - "3000:3000"
