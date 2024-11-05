@@ -23,5 +23,6 @@ logs
 .env.*
 !.env.example
 .deployments
+pnpm-lock.yaml
 Dockerfile
 docker-*.yml

@@ -59,7 +59,7 @@
         </div>
     </div>
 </template>
-<script setup lang="ts">
+<script lang="ts" setup>
 type itemsMenu = {
         link: string;
         icon: string;
