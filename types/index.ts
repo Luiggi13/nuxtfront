@@ -1,1 +1,2 @@
-export * from './itemsMenu'
+export * from './itemsMenu';
+export * from './ResponseBack';
