@@ -15,5 +15,14 @@ export default defineNuxtConfig({
   devServer: {
     port: 80,
     host: '0.0.0.0'
+  },
+  runtimeConfig: {
+    project: process.env.NUXT_PROJECT,
+    email: process.env.NUXT_EMAIL,
+    gcs_private_key: process.env.NUXT_GCS_PRIVATE_KEY,
+    api_route: {
+      cors: process.env.NUXT_CORS,
+      signed: process.env.NUXT_SIGNED,
+    }
   }
 })

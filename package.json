@@ -2,6 +2,7 @@
   "name": "nuxt-app",
   "private": true,
   "type": "module",
+  "version": "0.1.0",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -11,6 +12,7 @@
     "start": "node .output/server/index.mjs"
   },
   "dependencies": {
+    "@google-cloud/storage": "^7.14.0",
     "nuxt": "^3.14.0",
     "pinia": "^2.2.6",
     "vue": "latest",
