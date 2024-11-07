@@ -1,5 +1,5 @@
 <template>
-	<template v-if="props.multiples">
+	<template v-if="props.multiples && props.selecteds?.length">
 		<hr class="h-[0.5px] bg-black w-[90%]">
 		<h5 class="text-left mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white w-[90%]">Selected
 			files</h5>
@@ -24,6 +24,5 @@ const emit = defineEmits<{
 const props = defineProps<{
 	multiples: boolean;
 	selecteds: File[] | null;
-	selected: File | null;
 }>()
 </script>

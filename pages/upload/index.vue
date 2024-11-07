@@ -18,9 +18,9 @@
         </div>
         <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Multiple files</span>
       </label>
-      <UploadButton v-if="selecteds?.length || selected?.name" :selecteds="selecteds" />
+      <UploadButton v-if="selecteds?.length || selected?.name" :selecteds="selecteds" @upload="uploadMultiple"/>
       </div>
-    <RemoveItems :multiples="isMultipleFiles" :selected="selected" :selecteds="selecteds" @update="remove" />
+    <RemoveItems :multiples="isMultipleFiles" :selecteds="selecteds" @update="remove" />
   </div>
 </template>
 <script setup lang="ts">
@@ -46,14 +46,14 @@ const remove = (order: number) => {
   }
   selected.value = null
 }
-const uploadMultiple = (e: Event) => {
-  return isMultipleFiles.value ? HandleSubmitMultiple(e) : HandleSubmit(e)
+const uploadMultiple = () => {
+  return isMultipleFiles.value ? HandleSubmitMultiple() : HandleSubmit()
 }
 const onChooseOption = (e: Event) => {
   return isMultipleFiles.value ? onChooseMultipleFiles(e) : onChooseFile(e)
 }
-const HandleSubmit = async (event: Event) => {
-  event.preventDefault();
+const HandleSubmit = async (event?: Event) => {
+  event?.preventDefault();
   if (!selected) return;
   showLoader.value = true
   messageLoader.value = 'Processing file...'
@@ -77,8 +77,8 @@ const HandleSubmit = async (event: Event) => {
   showLoader.value = false
 };
 
-const HandleSubmitMultiple = async (event: Event) => {
-  event.preventDefault();
+const HandleSubmitMultiple = async (event?: Event) => {
+  event?.preventDefault();
   if (selecteds.value!.length < 0) return;
   showLoader.value = true
   messageLoader.value = 'Processing file...'
