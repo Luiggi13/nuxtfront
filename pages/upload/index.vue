@@ -1,66 +1,60 @@
 <template>
   <div class="flex flex-col gap-8 items-center justify-center w-full h-dvh">
-    <form v-if="!showLoader" @submit="HandleSubmit" class="w-[90%]">
-      <label htmlFor="dropzone-file"
-        class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-        <div class="flex flex-col items-center justify-center pt-5 pb-6">
-          <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-              d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
-          </svg>
-          <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or
-            drag and drop</p>
-          <p class="text-xs text-gray-500 dark:text-gray-400">PDF (MAX. 100MB)</p>
-          <p v-if="!selected && showErrorTypeFile" class="bg-red-300 text-black rounded-lg px-4 py-1 mt-2">El archivo no
-            es un PDF, inténtalo de
-            nuevo
-          </p>
+    <form v-if="!showLoader" @submit="uploadMultiple" class="w-[90%]">
+      <label for="dropzone-file"
+        class="relative flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+        <CaptionsUpload :selected="selected" :selecteds="selecteds" v-model:showErrorTypeFile="showErrorTypeFile" />
+        <input id="dropzone-file" type="file" name='file' class="hidden" accept=".pdf" :multiple="isMultipleFiles"
+          @change="onChooseOption" />
+        </label>
+      </form>
+      <LoaderFiles v-else :message="messageLoader" />
+      <div class="flex justify-between cursor-pointer w-[90%] items-center">
+        <label id="labelfiles" for="multiple__files" class="flex cursor-pointer w-[90%]">
+          <input type="checkbox" id="multiple__files" name="multiple__files" v-model="isMultipleFiles"
+          class="sr-only peer">
+          <div
+          class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
         </div>
-        <input id="dropzone-file" type="file" name='file' class="hidden" accept=".pdf" @change="onChooseFile" />
-        <button v-if="selected" type='submit'
-          class='border border-slate-200 shadow-md hover:bg-slate-100 px-4 py-2 rounded-md'>
-          Upload
-        </button>
+        <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Multiple files</span>
       </label>
-    </form>
-    <div v-else class="w-[90%]">
-      <div
-        class="flex flex-col items-center justify-center w-full h-64 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-        <div class="relative items-center block max-w-sm p-6 bg-transparent">
-          <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white opacity-20">{{messageLoader}}
-          </h5>
-          <div role="status" class="absolute -translate-x-1/2 -translate-y-1/2 top-2/4 left-1/2">
-            <svg aria-hidden="true" class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
-              viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                fill="currentColor" />
-              <path
-                d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                fill="currentFill" />
-            </svg>
-            <span class="sr-only">Loading...</span>
-          </div>
-        </div>
+      <UploadButton v-if="selecteds?.length || selected?.name" :selecteds="selecteds" />
       </div>
-    </div>
+    <RemoveItems :multiples="isMultipleFiles" :selected="selected" :selecteds="selecteds" @update="remove" />
   </div>
 </template>
 <script setup lang="ts">
+import LoaderFiles from '~/components/LoaderFiles.vue';
 import { handleDownload, isPDF } from '~/composables/useFiles.composable';
 import { useGCPStore } from '~/stores/gcpStore';
+import CounterFiles from './CounterFiles.vue'
+import CaptionsUpload from './CaptionsUpload.vue'
+import UploadButton from './UploadButton.vue'
+import RemoveItems from './RemoveItems.vue';
 
 const selected = ref<File | null>(null)
+const selecteds = ref<File[] | null>(null)
+const isMultipleFiles = ref<boolean>(false)
 const gcpStore = useGCPStore()
 const fileToDownload = ref<string>('')
-const showErrorTypeFile = ref<boolean>(false)
 const messageLoader = ref<string>('Processing file...')
 const showLoader = ref<boolean>(false)
+
+const remove = (order: number) => {
+  if (isMultipleFiles.value) {
+    selecteds.value?.splice(order, 1);
+  }
+  selected.value = null
+}
+const uploadMultiple = (e: Event) => {
+  return isMultipleFiles.value ? HandleSubmitMultiple(e) : HandleSubmit(e)
+}
+const onChooseOption = (e: Event) => {
+  return isMultipleFiles.value ? onChooseMultipleFiles(e) : onChooseFile(e)
+}
 const HandleSubmit = async (event: Event) => {
   event.preventDefault();
   if (!selected) return;
-  // setShowOverlay(true);
   showLoader.value = true
   messageLoader.value = 'Processing file...'
   await gcpStore.setCors()
@@ -79,22 +73,100 @@ const HandleSubmit = async (event: Event) => {
     await handleDownload(url.split('?')[0], fileToDownload.value)
     selected.value = null
     fileToDownload.value = ''
-    showLoader.value = false
   }
-  // setShowOverlay(false);
+  showLoader.value = false
 };
-const onChooseFile = (e: Event) => {
-  const target = e.target as HTMLInputElement;
-  if (target && target.files) {
-    const tmpSelectedFile = target.files[0]
 
-    if (isPDF(tmpSelectedFile.type)) {
-      showErrorTypeFile.value = false
-      selected.value = tmpSelectedFile
-    } else {
-      showErrorTypeFile.value = true
-      selected.value = null;
+const HandleSubmitMultiple = async (event: Event) => {
+  event.preventDefault();
+  if (selecteds.value!.length < 0) return;
+  showLoader.value = true
+  messageLoader.value = 'Processing file...'
+  await gcpStore.setCors()
+  for (let index = selecteds.value!.length - 1; index >= 0; index--) {
+    const element = selecteds.value![index];
+
+    const urlSigned = await gcpStore.postSigned(element.name)
+
+    const { url } = await fetch(urlSigned, {
+      method: 'PUT',
+      body: element,
+      headers: {
+        'Content-Type': 'application/octet-stream',
+      },
+    })
+    if (url) {
+      fileToDownload.value = (url.split('?')[0]).split('_pdfs/')[1]
+      messageLoader.value = 'Downloading file...'
+      await handleDownload(url.split('?')[0], fileToDownload.value)
+      selecteds.value?.splice(index, 1);
+      fileToDownload.value = ''
     }
   }
+  showLoader.value = false
+};
+
+const showErrorTypeFile = ref<boolean>(false)
+const onChooseFile = (e: Event) => {
+  const { files } = e.target as HTMLInputElement;
+
+  // Verificar si existen archivos seleccionados
+  if (!files || files.length === 0) {
+    showErrorTypeFile.value = true;
+    selected.value = null;
+    return;
+  }
+
+  const selectedFile = files[0];
+
+  // Verificar si el archivo es un PDF
+  if (isPDF(selectedFile.type)) {
+    showErrorTypeFile.value = false;
+    selected.value = selectedFile;
+  } else {
+    showErrorTypeFile.value = true;
+    selected.value = null;
+  }
 }
+
+const onChooseMultipleFiles = (e: Event) => {
+  const { files } = e.target as HTMLInputElement;
+
+  if (!files || files.length === 0) {
+    _resetFileSelection();
+    return;
+  }
+
+  const selectedFiles = [] as File[]
+  for (let index = 0; index < files.length; index++) {
+    const element = files[index];
+    if (isPDF(element.type)) {
+
+      selectedFiles.push(element)
+    }
+  }
+  if (selectedFiles.length < 1) {
+    _resetFileSelection();
+  } else {
+    showErrorTypeFile.value = false;
+    selecteds.value = selectedFiles
+  }
+}
+
+const _resetFileSelection = () => {
+  showErrorTypeFile.value = true;
+  selected.value = null;
+};
+
+watch(
+  () => isMultipleFiles.value,
+  (newVal, oldVal) => {
+    // update iframe if amount changes
+    if (newVal === true) {
+      selected.value = null
+    }else {
+      selecteds.value = null
+    }
+  }
+)
 </script>
