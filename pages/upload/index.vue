@@ -7,20 +7,20 @@
         <CaptionsUpload :selected="selected" :selecteds="selecteds" v-model:showErrorTypeFile="showErrorTypeFile" />
         <input id="dropzone-file" type="file" name='file' class="hidden" accept=".pdf" :multiple="isMultipleFiles"
           @change="onChooseOption" />
-        </label>
-      </form>
-      <LoaderFiles v-else :message="messageLoader" />
-      <div class="flex justify-between cursor-pointer w-[90%] items-center">
-        <label id="labelfiles" for="multiple__files" class="flex cursor-pointer w-[90%]">
-          <input type="checkbox" id="multiple__files" name="multiple__files" v-model="isMultipleFiles"
+      </label>
+    </form>
+    <LoaderFiles v-else :message="messageLoader" />
+    <div class="flex justify-between cursor-pointer w-[90%] items-center">
+      <label id="labelfiles" for="multiple__files" class="flex cursor-pointer w-[90%]">
+        <input type="checkbox" id="multiple__files" name="multiple__files" v-model="isMultipleFiles"
           class="sr-only peer">
-          <div
+        <div
           class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
         </div>
         <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Multiple files</span>
       </label>
-      <UploadButton v-if="selecteds?.length || selected?.name" :selecteds="selecteds" @upload="uploadMultiple"/>
-      </div>
+      <UploadButton v-if="selecteds?.length || selected?.name" :selecteds="selecteds" @upload="uploadMultiple" />
+    </div>
     <RemoveItems :multiples="isMultipleFiles" :selecteds="selecteds" @update="remove" />
   </div>
 </template>
@@ -56,14 +56,15 @@ const onChooseOption = (e: Event) => {
 const HandleSubmit = async (event?: Event) => {
   event?.preventDefault();
   if (!selected) return;
+  const myNewFile = new File([selected.value!], hashDate() + '.pdf', { type: selected.value?.type });
   showLoader.value = true
   messageLoader.value = 'Processing file...'
   await gcpStore.setCors()
-  const urlSigned = await gcpStore.postSigned(selected.value?.name!)
+  const urlSigned = await gcpStore.postSigned(myNewFile?.name!)
 
   const { url } = await fetch(urlSigned, {
     method: 'PUT',
-    body: selected.value,
+    body: myNewFile,
     headers: {
       'Content-Type': 'application/octet-stream',
     },
@@ -87,12 +88,13 @@ const HandleSubmitMultiple = async (event?: Event) => {
   await gcpStore.setCors()
   for (let index = selecteds.value!.length - 1; index >= 0; index--) {
     const element = selecteds.value![index];
+    const myNewFiles: File = new File([element], hashDate() + '.pdf', { type: element?.type })
 
-    const urlSigned = await gcpStore.postSigned(element.name)
+    const urlSigned = await gcpStore.postSigned(myNewFiles.name)
 
     const { url } = await fetch(urlSigned, {
       method: 'PUT',
-      body: element,
+      body: myNewFiles,
       headers: {
         'Content-Type': 'application/octet-stream',
       },
@@ -100,7 +102,7 @@ const HandleSubmitMultiple = async (event?: Event) => {
     if (url) {
       fileToDownload.value = (url.split('?')[0]).split('_pdfs/')[1]
       messageLoader.value = 'Downloading file...'
-      await handleDownload(url.split('?')[0], fileToDownload.value)
+      await handleDownload((url.split('?')[0]).split('_pdfs/')[1], fileToDownload.value)
       selecteds.value?.splice(index, 1);
       fileToDownload.value = ''
     }
@@ -166,9 +168,19 @@ watch(
     // update iframe if amount changes
     if (newVal === true) {
       selected.value = null
-    }else {
+    } else {
       selecteds.value = null
     }
   }
 )
+
+const hashDate = ():string => {
+  var today = new Date();
+  var dd = String(today.getDate()).padStart(2, '0');
+  var mm = String(today.getMonth() + 1).padStart(2, '0');
+  var yyyy = today.getFullYear();
+
+
+  return `modified_${dd}${mm}${yyyy}_${Math.round(new Date().getTime() / 1000)}`
+}
 </script>
