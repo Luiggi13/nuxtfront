@@ -27,7 +27,6 @@
 import LoaderFiles from '~/components/LoaderFiles.vue';
 import { handleDownload, isPDF } from '~/composables/useFiles.composable';
 import { useGCPStore } from '~/stores/gcpStore';
-import CounterFiles from './CounterFiles.vue'
 import CaptionsUpload from './CaptionsUpload.vue'
 import UploadButton from './UploadButton.vue'
 import RemoveItems from './RemoveItems.vue';
@@ -70,7 +69,8 @@ const HandleSubmit = async (event?: Event) => {
   if (url) {
     fileToDownload.value = (url.split('?')[0]).split('_pdfs/')[1]
     messageLoader.value = 'Downloading file...'
-    await handleDownload(url.split('?')[0], fileToDownload.value)
+    const compressed = await gcpStore.compressFile(fileToDownload.value)
+    await handleDownload(compressed.file, fileToDownload.value)
     selected.value = null
     fileToDownload.value = ''
   }

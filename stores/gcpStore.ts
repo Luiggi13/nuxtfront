@@ -1,5 +1,4 @@
 export const useGCPStore = defineStore('gcp-store', () => {
-
     const setCors = async () => {
         await $fetch('/api/gcp/cors', {
             method: 'GET',
@@ -13,8 +12,19 @@ export const useGCPStore = defineStore('gcp-store', () => {
         })
         return url as string
     }
+    
+    const compressFile = async (filename: string) => {
+        const url = await $fetch('/api/gcp/compress', {
+            method: 'POST',
+            params: {
+                filename: filename
+            }
+        })
+        return url
+    }
   return {
     setCors,
     postSigned,
+    compressFile,
   }
 })

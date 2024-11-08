@@ -20,6 +20,9 @@ export default defineNuxtConfig({
     project: process.env.NUXT_PROJECT,
     email: process.env.NUXT_EMAIL,
     gcs_private_key: process.env.NUXT_GCS_PRIVATE_KEY,
+    download: process.env.NUXT_DOWNLOAD,
+    compressed: process.env.NUXT_COMPRESSED,
+    key: process.env.NUXT_KEY,
     api_route: {
       cors: process.env.NUXT_CORS,
       signed: process.env.NUXT_SIGNED,
