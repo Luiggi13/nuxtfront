@@ -1,33 +1,29 @@
 <template>
   <div class="flex flex-col gap-8 items-center justify-center w-full h-dvh">
     <HeaderIcon />
-    <form v-if="!showLoader" @submit="uploadMultiple" class="w-[90%]">
+    <form v-if="!showLoader" @submit="HandleSubmitMultiple" class="w-[90%]">
       <label for="dropzone-file"
         class="relative flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
         <CaptionsUpload :selected="selected" :selecteds="selecteds" v-model:showErrorTypeFile="showErrorTypeFile" />
-        <input id="dropzone-file" type="file" name='file' class="hidden" accept=".pdf" :multiple="isMultipleFiles"
+        <input id="dropzone-file" type="file" name='file' class="hidden" accept=".pdf" :multiple="true"
           @change="onChooseOption" />
       </label>
     </form>
     <LoaderFiles v-else :message="messageLoader" />
-    <div class="flex justify-between cursor-pointer w-[90%] items-center">
-      <label id="labelfiles" for="multiple__files" class="flex cursor-pointer w-[90%]">
-        <input type="checkbox" id="multiple__files" name="multiple__files" v-model="isMultipleFiles"
-          class="sr-only peer">
-        <div
-          class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
-        </div>
-        <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Multiple files</span>
-      </label>
-      <UploadButton v-if="selecteds?.length || selected?.name" :selecteds="selecteds" @upload="uploadMultiple" />
+    <div class="flex justify-end cursor-pointer w-[90%] items-center">
+      <UploadButton v-if="selecteds?.length || selected?.name" :selecteds="selecteds" @upload="HandleSubmitMultiple" />
     </div>
     <RemoveItems :multiples="isMultipleFiles" :selecteds="selecteds" @update="remove" />
+    <p @click="addFile()" class="cursor-pointer">
+      {{ gettedFiles }}
+    </p>
   </div>
 </template>
 <script setup lang="ts">
 import LoaderFiles from '~/components/LoaderFiles.vue';
 import { handleDownload, isPDF } from '~/composables/useFiles.composable';
 import { useGCPStore } from '~/stores/gcpStore';
+import { useFileStore } from '~/stores/downloadStore';
 import CaptionsUpload from './CaptionsUpload.vue'
 import UploadButton from './UploadButton.vue'
 import RemoveItems from './RemoveItems.vue';
@@ -35,8 +31,9 @@ import HeaderIcon from './HeaderIcon.vue'
 
 const selected = ref<File | null>(null)
 const selecteds = ref<File[] | null>(null)
-const isMultipleFiles = ref<boolean>(false)
+const isMultipleFiles = ref<boolean>(true)
 const gcpStore = useGCPStore()
+const fileStore = useFileStore();
 const fileToDownload = ref<string>('')
 const messageLoader = ref<string>('Processing file...')
 const showLoader = ref<boolean>(false)
@@ -47,39 +44,14 @@ const remove = (order: number) => {
   }
   selected.value = null
 }
-const uploadMultiple = () => {
-  return isMultipleFiles.value ? HandleSubmitMultiple() : HandleSubmit()
-}
+
 const onChooseOption = (e: Event) => {
   return isMultipleFiles.value ? onChooseMultipleFiles(e) : onChooseFile(e)
+} 
+const addFile = () => {
+  gettedFiles.value = fileStore.addFile('ejemplo')
 }
-const HandleSubmit = async (event?: Event) => {
-  event?.preventDefault();
-  if (!selected) return;
-  const myNewFile = new File([selected.value!], hashDate() + '.pdf', { type: selected.value?.type });
-  showLoader.value = true
-  messageLoader.value = 'Processing file...'
-  await gcpStore.setCors()
-  const urlSigned = await gcpStore.postSigned(myNewFile?.name!)
-
-  const { url } = await fetch(urlSigned, {
-    method: 'PUT',
-    body: myNewFile,
-    headers: {
-      'Content-Type': 'application/octet-stream',
-    },
-  })
-  if (url) {
-    fileToDownload.value = (url.split('?')[0]).split('_pdfs/')[1]
-    messageLoader.value = 'Downloading file...'
-    const compressed = await gcpStore.compressFile(fileToDownload.value)
-    await handleDownload(compressed.file, fileToDownload.value)
-    selected.value = null
-    fileToDownload.value = ''
-  }
-  showLoader.value = false
-};
-
+const gettedFiles = ref<URLGCP[]>([])
 const HandleSubmitMultiple = async (event?: Event) => {
   event?.preventDefault();
   if (selecteds.value!.length < 0) return;
@@ -101,12 +73,14 @@ const HandleSubmitMultiple = async (event?: Event) => {
     })
     if (url) {
       fileToDownload.value = (url.split('?')[0]).split('_pdfs/')[1]
+      // fileStore.addFile((url.split('?')[0]).split('_pdfs/')[1])
       messageLoader.value = 'Downloading file...'
-      await handleDownload((url.split('?')[0]).split('_pdfs/')[1], fileToDownload.value)
+      // await handleDownload((url.split('?')[0]).split('_pdfs/')[1], fileToDownload.value)
       selecteds.value?.splice(index, 1);
       fileToDownload.value = ''
     }
   }
+  selecteds.value = []
   showLoader.value = false
 };
 
@@ -134,6 +108,7 @@ const onChooseFile = (e: Event) => {
 }
 
 const onChooseMultipleFiles = (e: Event) => {
+  fileStore.addFile('http://')
   const { files } = e.target as HTMLInputElement;
 
   if (!files || files.length === 0) {
@@ -183,4 +158,5 @@ const hashDate = ():string => {
 
   return `modified_${dd}${mm}${yyyy}_${Math.round(new Date().getTime() / 1000)}`
 }
+const supabase = useSupabaseClient()
 </script>

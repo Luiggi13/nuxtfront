@@ -14,14 +14,12 @@ export const useGCPStore = defineStore('gcp-store', () => {
     }
     
     const compressFile = async (filename: string) => {
-        const url = await $fetch('/api/gcp/compress', {
+        const url = await $fetch('/api/gcp/compress?filename='+ filename, {
             method: 'POST',
-            params: {
-                filename: filename
-            }
         })
         return url
     }
+
   return {
     setCors,
     postSigned,

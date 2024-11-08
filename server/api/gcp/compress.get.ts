@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
         method: 'GET',
         headers: {
           accept: 'application/json',
-          'x-api-key': config.key,
+          'x-api-key': '7bc772a73ddca9d1c295bb2ee09764a3',
         },
         params: {
           filename: filename,
