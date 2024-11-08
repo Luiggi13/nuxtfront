@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col gap-8 items-center justify-center w-full h-dvh">
-    <h1 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">PDF file compression 🚀</h1>
+    <HeaderIcon />
     <form v-if="!showLoader" @submit="uploadMultiple" class="w-[90%]">
       <label for="dropzone-file"
         class="relative flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
@@ -31,6 +31,7 @@ import { useGCPStore } from '~/stores/gcpStore';
 import CaptionsUpload from './CaptionsUpload.vue'
 import UploadButton from './UploadButton.vue'
 import RemoveItems from './RemoveItems.vue';
+import HeaderIcon from './HeaderIcon.vue'
 
 const selected = ref<File | null>(null)
 const selecteds = ref<File[] | null>(null)
