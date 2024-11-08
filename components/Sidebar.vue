@@ -1,10 +1,7 @@
 <template>
         <div class="w-96 p-4 bg-white flex-col justify-start items-start gap-6 inline-flex">
             <div class="w-full justify-between items-center gap-2.5 inline-flex">
-                <a href="#">
-                    <img src="https://pagedone.io/asset/uploads/1701235273.png" alt="Pagedone logo image" width="103"
-                        height="34" />
-                </a>
+                <div class="w-[103px]"></div>
                 <a href="#" class="w-6 h-6 relative bg-white">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g id="Menu">
