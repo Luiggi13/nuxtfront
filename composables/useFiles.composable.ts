@@ -1,5 +1,5 @@
 export const handleDownload = async (filename: string, downloadFile: string = 'file.pdf') => {
-  const response = await fetch('https://storage.googleapis.com/luiggi_pdfs/compressed/' + filename);
+  const response = await fetch('https://storage.googleapis.com/luiggi_pdfs/' + filename);
   const blob = await response.blob();
   const url = window.URL.createObjectURL(blob);
   if (!url) return;
