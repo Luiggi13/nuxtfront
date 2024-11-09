@@ -14,9 +14,6 @@
       <UploadButton v-if="selecteds?.length || selected?.name" :selecteds="selecteds" @upload="HandleSubmitMultiple" />
     </div>
     <RemoveItems :multiples="isMultipleFiles" :selecteds="selecteds" @update="remove" />
-    <p @click="addFile()" class="cursor-pointer">
-      {{ gettedFiles }}
-    </p>
   </div>
 </template>
 <script setup lang="ts">
@@ -33,7 +30,6 @@ const selected = ref<File | null>(null)
 const selecteds = ref<File[] | null>(null)
 const isMultipleFiles = ref<boolean>(true)
 const gcpStore = useGCPStore()
-const fileStore = useFileStore();
 const fileToDownload = ref<string>('')
 const messageLoader = ref<string>('Processing file...')
 const showLoader = ref<boolean>(false)
@@ -48,9 +44,6 @@ const remove = (order: number) => {
 const onChooseOption = (e: Event) => {
   return isMultipleFiles.value ? onChooseMultipleFiles(e) : onChooseFile(e)
 } 
-const addFile = () => {
-  gettedFiles.value = fileStore.addFile('ejemplo')
-}
 const gettedFiles = ref<URLGCP[]>([])
 const HandleSubmitMultiple = async (event?: Event) => {
   event?.preventDefault();
@@ -108,7 +101,6 @@ const onChooseFile = (e: Event) => {
 }
 
 const onChooseMultipleFiles = (e: Event) => {
-  fileStore.addFile('http://')
   const { files } = e.target as HTMLInputElement;
 
   if (!files || files.length === 0) {
@@ -158,5 +150,4 @@ const hashDate = ():string => {
 
   return `modified_${dd}${mm}${yyyy}_${Math.round(new Date().getTime() / 1000)}`
 }
-const supabase = useSupabaseClient()
 </script>
