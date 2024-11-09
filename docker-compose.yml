@@ -2,8 +2,8 @@ version: '3.9'
 
 services:
   nextapp:
-    container_name: front
-    image: nuxt-front
+    container_name: supa
+    image: supa
     build: .
     ports:
-      - "3000:3000"
+      - "80:80"
