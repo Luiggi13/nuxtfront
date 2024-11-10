@@ -3,13 +3,13 @@ import type { Complete, InsertDownload } from "~/server/api/downloads/insert.pos
 
 
 export const fetchAllDownloads = async (): Promise<DownloadsResponse[]> => {
-    return await $fetch<DownloadsResponse[]>('/api/downloads/all', {
+    return await $fetch<DownloadsResponse[]>(window.location.origin + '/api/downloads/all', {
         method: 'GET',
     })
 }
 
 export const insertDownload = async (data: Complete<InsertDownload>[]): Promise<boolean> => {
-    return await $fetch<boolean>('/api/downloads/insert', {
+    return await $fetch<boolean>(window.location.origin + '/api/downloads/insert', {
         method: 'POST',
         headers: {
             accept: 'application/json',
