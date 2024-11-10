@@ -21,7 +21,8 @@ export default defineNuxtConfig({
     email: process.env.NUXT_EMAIL,
     gcs_private_key: process.env.NUXT_GCS_PRIVATE_KEY,
     download: process.env.NUXT_DOWNLOAD,
-    compressed: process.env.NUXT_COMPRESSED,
+    downloadAll: process.env.NUXT_DOWNLOAD_ALL,
+    insert: process.env.NUXT_DOWNLOAD_INSERT,
     key: process.env.NUXT_KEY,
     api_route: {
       cors: process.env.NUXT_CORS,

@@ -1,25 +1,21 @@
+import type { DownloadsResponse } from "~/server/api/downloads/all.get";
+import type { Complete, InsertDownload } from "~/server/api/downloads/insert.post";
 
+export const useDownloadStore = defineStore('downloads', () => {
+    const allDownloadsResponse = ref<DownloadsResponse[]>([])
 
-export type URLGCP = {
-    readonly url: string;
-    fileName: string;
-}
+    const getAllDownloads = async (): Promise<DownloadsResponse[]> => {
+        allDownloadsResponse.value = await fetchAllDownloads();
+        return allDownloadsResponse.value
+    }
 
-export const useFileStore = defineStore('files', () => {
-    const url: string = 'https://storage.googleapis.com/luiggi_pdfs/';
-    const readyToDownload = ref<URLGCP[]>([]);
-
-    const addFile = (fileName: string): URLGCP[] => {
-        readyToDownload.value.push({ url, fileName });
-        return readyToDownload.value;
-    };
-
-    const getFiles = (): URLGCP[] => {
-        return readyToDownload.value;
-    };
+    const insertFakeDownload = async (data: Complete<InsertDownload>[]): Promise<boolean> => {
+        return await insertDownload(data);
+    }
 
     return {
-        addFile,
-        getFiles,
+        allDownloadsResponse,
+        getAllDownloads,
+        insertDocumentDB: insertFakeDownload
     };
 });
