@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
     const config = useRuntimeConfig()
     const body = await readBody(event)
 
-    const res = await $fetch(config.insert, {
+    const res = await $fetch('https://gcloud-report-518624809460.europe-southwest1.run.app/downloads/insert', {
         method: 'POST',
         headers: {
             accept: 'application/json'
