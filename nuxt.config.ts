@@ -24,6 +24,7 @@ export default defineNuxtConfig({
     downloadAll: process.env.NUXT_DOWNLOAD_ALL,
     key: process.env.NUXT_KEY,
     insert: process.env.NUXT_INSERT,
+    update: process.env.NUXT_UPDATE,
     api_route: {
       cors: process.env.NUXT_CORS,
       signed: process.env.NUXT_SIGNED,
