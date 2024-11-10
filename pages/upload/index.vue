@@ -141,7 +141,6 @@ const insertFake = async () => {
         fetched: false
       })
     }
-  const rr = await downloadStore.insertDocumentDB(data)
-  window.localStorage.setItem('helping', JSON.stringify(rr))
+  await downloadStore.insertDocumentDB(data)
 }
 </script>

@@ -29,7 +29,7 @@ export default defineEventHandler(async (event) => {
             accept: 'application/json',
             'x-api-key': config.key,
         },
-        body: JSON.stringify(body)
+        body: body
     });
     return res
 });

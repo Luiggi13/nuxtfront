@@ -12,7 +12,7 @@ export const insertDownload = async (data: Complete<InsertDownload>[]): Promise<
     return await $fetch<boolean>('/api/downloads/insert', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            accept: 'application/json',
           },
         body: data
     })

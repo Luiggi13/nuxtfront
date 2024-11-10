@@ -9,13 +9,13 @@ export const useDownloadStore = defineStore('downloads', () => {
         return allDownloadsResponse.value
     }
 
-    const insertFakeDownload = async (data: Complete<InsertDownload>[]): Promise<boolean> => {
+    const insertDocumentDB = async (data: Complete<InsertDownload>[]): Promise<boolean> => {
         return await insertDownload(data);
     }
 
     return {
         allDownloadsResponse,
         getAllDownloads,
-        insertDocumentDB: insertFakeDownload
+        insertDocumentDB
     };
 });
