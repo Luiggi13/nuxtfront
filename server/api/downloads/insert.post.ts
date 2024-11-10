@@ -23,12 +23,11 @@ export default defineEventHandler(async (event) => {
     const config = useRuntimeConfig()
     const body = await readBody(event)
 
-    const res = await $fetch(config.insert, {
+    return await $fetch(config.insert, {
         method: 'POST',
         headers: {
             accept: 'application/json'
         },
         body: body
     });
-    return res
 });

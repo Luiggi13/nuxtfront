@@ -17,7 +17,7 @@ export const insertDownload = async (data: string): Promise<boolean> => {
 }
 
 export const updateById = async (id: number): Promise<DownloadsResponse[]> => {
-    return await $fetch<DownloadsResponse[]>('http://localhost:1313/downloads/update', {
+    return await $fetch<DownloadsResponse[]>(window.location.origin + '/api/downloads/update', {
         method: 'PUT',
         headers: {
             accept: 'application/json',

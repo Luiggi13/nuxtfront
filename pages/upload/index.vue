@@ -70,6 +70,7 @@ const HandleSubmitMultiple = async (event?: Event) => {
       fileToDownload.value = ''
     }
   }
+  await new Promise((resolve) => setTimeout(resolve, 1000))
   await insertFake()
   selecteds.value = []
   showLoader.value = false
@@ -132,15 +133,13 @@ const insertFake = async () => {
   const data: Complete<InsertDownload>[] = [];
     for (let index = 0; index < urls.value.length; index++) {
       const element = urls.value[index];
-      data.push(
-        {
+      await downloadStore.insertDocumentDB(JSON.stringify({
         userid: window.crypto.randomUUID(),
         download_url:element,
         active: true,
         downloads: 0,
-        fetched: false
-      })
+        fetched: true
+      }))
     }
-  await downloadStore.insertDocumentDB(JSON.stringify(data))
 }
 </script>
