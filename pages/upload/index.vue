@@ -1,4 +1,7 @@
 <template>
+  <Head>
+    <Title>Compress documents</Title>
+  </Head>
   <div class="flex flex-col gap-8 items-center justify-center w-full h-dvh">
     <HeaderIcon />
     <form v-if="!showLoader" @submit="HandleSubmitMultiple" class="w-[90%]">

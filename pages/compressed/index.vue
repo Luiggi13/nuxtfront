@@ -1,5 +1,11 @@
 <template>
+    <Head>
+        <Title>Compressed documents</Title>
+    </Head>
     <div v-if="readyToDownload.length > 0" class="flex flex-col gap-8 items-center justify-center w-full h-dvh">
+        <div class="flex justify-center">
+            <img src="assets/file.avif" class="object-cover w-[20%]"/>
+        </div>
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
