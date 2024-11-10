@@ -15,3 +15,15 @@ export const insertDownload = async (data: string): Promise<boolean> => {
         body: data
     })
 }
+
+export const updateById = async (id: number): Promise<DownloadsResponse[]> => {
+    return await $fetch<DownloadsResponse[]>('http://localhost:1313/downloads/update', {
+        method: 'PUT',
+        headers: {
+            accept: 'application/json',
+          },
+          params: {
+            id: id,
+          },
+    })
+}

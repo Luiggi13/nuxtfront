@@ -13,9 +13,14 @@ export const useDownloadStore = defineStore('downloads', () => {
         return await insertDownload(data);
     }
 
+    const updateDocumentById = async (id: number): Promise<DownloadsResponse[]> => {
+        return await updateById(id);
+    }
+
     return {
         allDownloadsResponse,
         getAllDownloads,
-        insertDocumentDB
+        insertDocumentDB,
+        updateDocumentById
     };
 });

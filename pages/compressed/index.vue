@@ -38,7 +38,7 @@
                             {{ file.downloads || 0 }}
                         </td>
                         <td class="px-6 py-4 text-center">
-                            <a :href="file.download_url"
+                            <a :href="file.download_url" @click="updateDownloadsById(file.id)"
                             :download="file.blob"
                                 class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 pointer-events-auto">Download</a>
                         </td>
@@ -55,6 +55,23 @@ const readyToDownload = ref<DownloadsResponse[]>([])
 const readyWithBlob = ref<ResponseBlob[]>([])
 const downloadStore = useDownloadStore()
 onBeforeMount(async () => {
+ await fetchAll()
+})
+
+const handleDownload = async (filename: string) => {
+    const response = await fetch(filename);
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    if (!url) return;
+    return { href: url }
+};
+
+const updateDownloadsById = async (id:number) => {
+    await downloadStore.updateDocumentById(id)
+    await fetchAll()
+}
+
+const fetchAll = async () => {
     readyToDownload.value = await downloadStore.getAllDownloads()
     readyWithBlob.value = await Promise.all(
         readyToDownload.value.map(async (item) => {
@@ -67,13 +84,5 @@ onBeforeMount(async () => {
             } as ResponseBlob
         })
     )
-})
-
-const handleDownload = async (filename: string) => {
-    const response = await fetch(filename);
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
-    if (!url) return;
-    return { href: url }
-};
+}
 </script>
