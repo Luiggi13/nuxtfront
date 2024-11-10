@@ -22,8 +22,8 @@ export default defineNuxtConfig({
     gcs_private_key: process.env.NUXT_GCS_PRIVATE_KEY,
     download: process.env.NUXT_DOWNLOAD,
     downloadAll: process.env.NUXT_DOWNLOAD_ALL,
-    insert: process.env.NUXT_DOWNLOAD_INSERT,
     key: process.env.NUXT_KEY,
+    insert: process.env.NUXT_INSERT,
     api_route: {
       cors: process.env.NUXT_CORS,
       signed: process.env.NUXT_SIGNED,
