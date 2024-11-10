@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
     const res = await $fetch<Complete<InsertDownload>>(config.insert, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
+            accept: 'application/json',
             'x-api-key': config.key,
         },
         body: JSON.stringify(body)
