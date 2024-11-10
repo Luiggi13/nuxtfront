@@ -9,7 +9,7 @@ export const useDownloadStore = defineStore('downloads', () => {
         return allDownloadsResponse.value
     }
 
-    const insertDocumentDB = async (data: Complete<InsertDownload>[]): Promise<boolean> => {
+    const insertDocumentDB = async (data: string): Promise<boolean> => {
         return await insertDownload(data);
     }
 

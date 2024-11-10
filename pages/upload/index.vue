@@ -141,6 +141,6 @@ const insertFake = async () => {
         fetched: false
       })
     }
-  await downloadStore.insertDocumentDB(data)
+  await downloadStore.insertDocumentDB(JSON.stringify(data))
 }
 </script>

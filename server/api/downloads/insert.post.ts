@@ -23,11 +23,10 @@ export default defineEventHandler(async (event) => {
     const config = useRuntimeConfig()
     const body = await readBody(event)
 
-    const res = await $fetch<Complete<InsertDownload>>(config.insert, {
+    const res = await $fetch(config.insert, {
         method: 'POST',
         headers: {
-            accept: 'application/json',
-            'x-api-key': config.key,
+            accept: 'application/json'
         },
         body: body
     });
