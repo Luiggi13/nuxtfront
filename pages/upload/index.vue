@@ -2,8 +2,7 @@
   <Head>
     <Title>Compress documents</Title>
   </Head>
-  <div class="flex flex-col gap-8 items-center justify-center w-full h-dvh">
-    <HeaderIcon />
+  <div class="flex flex-col gap-8 items-center justify-center w-full h-auto mt-[20%]">
     <form v-if="!showLoader" @submit="HandleSubmitMultiple" class="w-[90%]">
       <label for="dropzone-file"
         class="relative flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
