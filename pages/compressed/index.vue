@@ -2,9 +2,20 @@
     <Head>
         <Title>Compressed documents</Title>
     </Head>
-    <div v-if="readyToDownload.length > 0" class="flex flex-col gap-8 items-center justify-center w-full h-dvh">
+    <div v-if="!readyToDownload.length" class="flex flex-col gap-8 items-center justify-center w-full h-dvh">
         <div class="flex justify-center">
             <img src="assets/file.avif" class="object-cover w-[20%]"/>
+        </div>
+        <div class="w-[30%]">
+            <h1 class="text-2xl text-center mb-10">No hay documentos</h1>
+            <button @click="empezar()"
+            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Empezar</button>
+        </div>
+    </div>
+    <div v-if="readyToDownload.length > 0" class="flex flex-col gap-8 items-center justify-center w-full h-dvh">
+        <div class="w-[90%] h-200 flex flex-col justify-center items-center gap-3">
+            <img src="assets/file.avif" class="object-cover w-[10%]"/>
+            <h1 class="text-2xl text-center mb-10">Mis documentos</h1>
         </div>
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -91,4 +102,6 @@ const fetchAll = async () => {
         })
     )
 }
+
+const empezar = () => navigateTo('/upload')
 </script>
