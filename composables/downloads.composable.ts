@@ -27,3 +27,15 @@ export const updateById = async (id: number): Promise<DownloadsResponse[]> => {
           },
     })
 }
+
+export const updateByIdInactive = async (id: number): Promise<DownloadsResponse[]> => {
+    return await $fetch<DownloadsResponse[]>(window.location.origin + '/api/downloads/active', {
+        method: 'PUT',
+        headers: {
+            accept: 'application/json',
+          },
+          params: {
+            id: id,
+          },
+    })
+}

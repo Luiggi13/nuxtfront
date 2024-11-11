@@ -21,20 +21,18 @@
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
+                        <th scope="col" class="px-6 py-3"></th>
                         <th scope="col" class="px-6 py-3">
-                            ID
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            User
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            ACTIVE
+                            Archivo
                         </th>
                         <th scope="col" class="px-6 py-3">
                             Downloads
                         </th>
                         <th scope="col" class="px-6 py-3">
                             <span class="sr-only">Action</span>
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            <span class="sr-only">Eliminar</span>
                         </th>
                     </tr>
                 </thead>
@@ -43,13 +41,10 @@
                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                         <th scope="row"
                             class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center">
-                            {{ file.id }}
+                            {{ i + 1 }}
                         </th>
                         <td class="px-6 py-4 text-center">
-                            {{ file.userid }}
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            {{ file.active ? '✅' : '❌' }}
+                            {{ file.blob.split('.pdf')[0].toLocaleUpperCase() }}
                         </td>
                         <td class="px-6 py-4 text-center">
                             {{ file.downloads || 0 }}
@@ -58,6 +53,10 @@
                             <a :href="file.download_url" @click="updateDownloadsById(file.id)"
                             :download="file.blob"
                                 class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 pointer-events-auto">Download</a>
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            <a @click="toInactive(file.id)"
+                                class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800 pointer-events-auto cursor-pointer">Eliminar</a>
                         </td>
                     </tr>
                 </tbody>
@@ -88,6 +87,11 @@ const updateDownloadsById = async (id:number) => {
     await fetchAll()
 }
 
+const toInactive = async (id:number) => {
+    await downloadStore.updateDocumentByIdInactive(id)
+    await fetchAll()
+}
+
 const fetchAll = async () => {
     readyToDownload.value = await downloadStore.getAllDownloads()
     readyWithBlob.value = await Promise.all(
@@ -97,7 +101,7 @@ const fetchAll = async () => {
             return {
                 ...item,
                 download_url: valor?.href,
-                blob: item.download_url.split('compressed/')[1]
+                blob: item.download_url.split('compressed/')[1],
             } as ResponseBlob
         })
     )
