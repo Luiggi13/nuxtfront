@@ -1,12 +1,9 @@
 <script setup lang="ts">
+import Navigation from './Navigation.vue'
 </script>
 <template>
-  <NuxtLoadingIndicator/>
-  <!-- <div class="min-h-dvh h-dvh"> -->
-    <!-- <div class="w-full flex gap-4 min-h-dvh h-dvh"> -->
-      <NuxtPage />
-    <!-- </div> -->
-  <!-- </div> -->
+  <NuxtLoadingIndicator />
+  <Navigation />
+  <NuxtPage />
 </template>
-<style lang="css">
-</style>
+<style lang="css"></style>
